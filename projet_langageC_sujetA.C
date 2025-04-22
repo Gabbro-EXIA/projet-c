@@ -71,7 +71,7 @@ void table_multi(int *score){
     int resultat;
     int taille;
 
-    printf("Choisissez la table de multiplication\t");
+    printf("Choisissez la taille de la table de multiplication\t");
     scanf("%d", &taille);
 
     printf("\n   ");
@@ -90,22 +90,22 @@ void table_multi(int *score){
         }
         printf("\n");
     }
-    printf("Voulez-vous remplir une colonne par vous même ? (1=Oui,0=Non)\t");
+    printf("Voulez-vous remplir une colonne par vous meme ? (1=Oui,0=Non)\t");
     scanf("%d", &resultat);
     if (resultat == 1)
     {
         int colonne;
-        printf("Entrez le numéro de la colonne (1 à %d)\t", taille);
+        printf("Entrez le numero de la colonne (1 à %d)\t", taille);
         scanf("%d", &colonne);
         if (colonne < 1 || colonne > taille)
         {
-            printf("Numéro de colonne invalide.\n");
+            printf("Numero de colonne invalide.\n");
             return;
         }
         for (int i = 1; i <= taille; i++)
         {
             int reponse_utilisateur;
-            printf("Quel est le résultat de %d * %d ?\t", i, colonne);
+            printf("Quel est le resultat de %d * %d ?\t", i, colonne);
             scanf("%d", &reponse_utilisateur);
             if (reponse_utilisateur == i * colonne)
             {
@@ -114,7 +114,7 @@ void table_multi(int *score){
             }
             else
             {
-                printf("Désolé, la bonne réponse est %d.\n", i * colonne);
+                printf("Désole, la bonne réponse est %d.\n", i * colonne);
             }
         }
     }
