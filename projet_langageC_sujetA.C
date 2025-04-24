@@ -7,6 +7,48 @@ void menu(){
 }
 
 
+void gestionReponse(int resultat, int *score)
+{
+    int essaie = 3; 
+    int reponse; 
+
+    while (essaie > 0)
+    {
+        printf("Entrer le résultat\t");
+        scanf("%d", &reponse);
+        printf("Vous avez entré : %d\n", reponse);
+        if (reponse == resultat)
+        {
+            switch (essaie)
+            {
+                case 3:
+                    printf("Bravo, vous gagnez 10 points!\n\n");
+                    *score += 10; 
+                    return;
+                case 2:
+                    printf("Bravo ! Vous avez utilisé 2 essais. Vous gagnez donc 5 points.\n\n");
+                    *score += 5; 
+                    return;
+                case 1:
+                    printf("Bravo ! Vous avez utilisé 3 essai. Vous ne gagnez donc qu'un point.\n\n");
+                    *score += 1; 
+                    return;
+            }
+        }
+        else
+        {
+            essaie--;
+            if (essaie == 0){
+                printf("Désolé, la bonne réponse est %d.\n\n", resultat);
+            }
+            else{
+                printf("Désolé, ce n'est pas la bonne réponse. Il vous reste %d essais.\n\n", essaie);
+            }
+        }
+    }
+}
+
+
 void addition(int *score){
     int resultat;
     srand(time(NULL));
@@ -121,10 +163,32 @@ void table_multi(int *score){
 }
 
 
+void enregistrerScore(const char *nom, int score) {
+    FILE *fichier = fopen("score/scores.csv", "a"); 
+    if (fichier == NULL) {
+        printf("Erreur lors de l'ouverture du fichier des scores.\n");
+        return;
+    }
+
+
+
+}
+
+int enregistrerScore() {
+    FILE *fichier = fopen("score.txt","a");
+    if (fichier == NULL){
+        printf("Erreur d'ouverture du fichier.\n");
+        return 0;
+    }
+
+
+}
 
 
 int main(){
+    char nom[25];
     char choix;
+    int score = 0;
     int score = 0;
 
     menu();
@@ -146,6 +210,12 @@ int main(){
             case '5':
                 printf("division");
                 break;
+            case '0':
+                printf("Merci d'avoir joué ! Votre score final est : %d\n", score);
+                score = enregistrerScore();
+                if (peutquitter == 1){ 
+                    return 0;
+                }
             default:
                 printf("Mauvaise manipulation");
         }
