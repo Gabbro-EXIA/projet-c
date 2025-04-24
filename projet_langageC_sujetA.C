@@ -14,9 +14,8 @@ void gestionReponse(int resultat, int *score)
 
     while (essaie > 0)
     {
-        printf("Entrer le résultat\t");
         scanf("%d", &reponse);
-        printf("Vous avez entré : %d\n", reponse);
+        printf("Vous avez entre : %d\n", reponse);
         if (reponse == resultat)
         {
             switch (essaie)
@@ -26,11 +25,11 @@ void gestionReponse(int resultat, int *score)
                     *score += 10; 
                     return;
                 case 2:
-                    printf("Bravo ! Vous avez utilisé 2 essais. Vous gagnez donc 5 points.\n\n");
+                    printf("Bravo ! Vous avez utilise 2 essais. Vous gagnez donc 5 points.\n\n");
                     *score += 5; 
                     return;
                 case 1:
-                    printf("Bravo ! Vous avez utilisé 3 essai. Vous ne gagnez donc qu'un point.\n\n");
+                    printf("Bravo ! Vous avez utilise 3 essai. Vous ne gagnez donc qu'un point.\n\n");
                     *score += 1; 
                     return;
             }
@@ -39,10 +38,10 @@ void gestionReponse(int resultat, int *score)
         {
             essaie--;
             if (essaie == 0){
-                printf("Désolé, la bonne réponse est %d.\n\n", resultat);
+                printf("Désole, la bonne réponse est %d.\n\n", resultat);
             }
             else{
-                printf("Désolé, ce n'est pas la bonne réponse. Il vous reste %d essais.\n\n", essaie);
+                printf("Désole, ce n'est pas la bonne réponse. Il vous reste %d essais.\n\n", essaie);
             }
         }
     }
@@ -56,35 +55,21 @@ void addition(int *score){
     int b = rand() % 100;
 
     printf("Addition \n %d + %d = ? \n Entrez le resultat \n", a, b);
-    scanf("%d", &resultat);
-    printf("Vous avez entre %d \n", resultat);
-    if (resultat == a + b){
-        printf("Bravo ! \n");
-        score += 1;
-    }
-    else{
-        printf("Trompe ! \n");
-    }
+    resultat = a + b;
+    gestionReponse(resultat, score);   
 }
 
 
 void soustraction(int *score){
     int resultat;
     while(resultat == NULL){
-    srand(time(NULL));
+        srand(time(NULL));
         int a = rand() % 100;
         int b = rand() % 100;
         if(a > b){
             printf("Soustraction \n %d - %d = ? \n Entrez le resultat \n", a, b);
-            scanf("%d", &resultat);
-            printf("Vous avez entre %d \n", resultat);
-            if (resultat == a - b){
-                printf("Bravo ! \n");
-                score += 1;
-            }
-            else{
-                printf("Trompe ! \n");
-            }
+            resultat = a - b;
+            gestionReponse(resultat, score);
         }
     }
 }
@@ -97,15 +82,9 @@ void multiplication(int *score){
     int b = rand() % 10 + 1;
 
     printf("Multiplication \n %d * %d = ? \n Entrez le resultat \n", a, b);
-    scanf("%d", &resultat);
     printf("Vous avez entre %d \n", resultat);
-    if (resultat == a * b){
-        printf("Bravo ! \n");
-        score += 1;
-    }
-    else{
-        printf("Trompe ! \n");
-    }
+    resultat = a * b;
+    gestionReponse(resultat, score);
 }
 
 
@@ -189,7 +168,7 @@ int main(){
     char nom[25];
     char choix;
     int score = 0;
-    int score = 0;
+    int terminer = 0;
 
     menu();
     scanf("%s", &choix);
@@ -212,8 +191,9 @@ int main(){
                 break;
             case '0':
                 printf("Merci d'avoir joué ! Votre score final est : %d\n", score);
-                score = enregistrerScore();
-                if (peutquitter == 1){ 
+                terminer = enregistrerScore();
+                if (terminer == 1){ 
+                    printf("%d",&score);
                     return 0;
                 }
             default:
