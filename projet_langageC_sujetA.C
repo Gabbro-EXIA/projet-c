@@ -142,25 +142,153 @@ void table_multi(int *score){
 }
 
 
-void enregistrerScore(const char *nom, int score) {
-    FILE *fichier = fopen("score/scores.csv", "a"); 
+char menuEnregistrement(int *nom,int *score, int lignejoeur) 
+{
+    char choix;
+
+    while (1==1)
+    {
+        printf("Bienvenue dans le jeu Champion des Maths !\n");
+        printf("+-----------------------------------+\n|1 : Se connecter                   |\n|   (avec un nom d'utilisateur)     |\n|2 : ne pas se connecter            |\n+-----------------------------------+\nQuel est votre choix ?  ");
+        scanf(" %c", &choix);
+
+        while (getchar() != '\n');
+
+        switch (choix)
+        {
+            case '1':
+                printf("Entrez votre nom d'utilisateur :  ");
+                scanf("%s", nom); 
+                
+                if (lectureScore(nom,score,lignejoeur) == 0) 
+                {
+                    printf("Erreur, le score n'a pas pu être trouvé (verifiez bien que le nom d'utilisateur soit le meme).\n\n");
+                    break;                     
+                }
+                return; 
+            case '2':
+                do {
+                    printf("Entrez votre nom d'utilisateur : (ce nom doit être unique)  ");
+                    scanf("%s", nom); 
+                    if (verifJoueur(nom) == 1) {
+                        printf("Ce nom d'utilisateur existe deja. Veuillez en choisir un autre.\n");
+                    }
+                } while (verifJoueur(nom) == 1);
+                
+                *score = 0; 
+                return choix; 
+            default:
+                printf("Choix invalide. Veuillez reessayer.\n");
+        }
+        
+    }
+}
+
+
+int verifJoueur(char *nom_joueur) {    
+    FILE *fichier = fopen("score/score.txt", "r");
     if (fichier == NULL) {
-        printf("Erreur lors de l'ouverture du fichier des scores.\n");
+        printf("Erreur d'ouverture du fichier.\n");
+        return 1;
+    }
+
+    char ligne[256];
+    int nom_trouve = 0;
+
+    while (fgets(ligne, sizeof(ligne), fichier)) {
+        
+        char ligne_copy[256];
+        strcpy(ligne_copy, ligne);
+        
+        
+        char *nom = strtok(ligne_copy, ",");
+
+        if (strcmp(nom, nom_joueur) == 0) {
+            nom_trouve = 1;
+            break;
+        }
+    }
+
+    fclose(fichier);
+    return nom_trouve; 
+}
+
+
+int lectureScore(char *nom_joueur, int *score_joueur, int *lignejoueur) {    
+    FILE *fichier = fopen("score/score.txt", "r");
+    if (fichier == NULL) {
+        printf("Erreur d'ouverture du fichier.\n");
         return;
     }
 
+    char ligne[256];
+    int score_trouve = 0;
+    int ligne_courante = 0;  
 
+    while (fgets(ligne, sizeof(ligne), fichier)) {
+        
+        char ligne_copy[256];
+        strcpy(ligne_copy, ligne);
+        
+        
+        char *nom = strtok(ligne_copy, ",");
+        char *score_str = strtok(NULL, ",");
+        char *date = strtok(NULL, "\n");
 
+        if (nom && score_str && date) {
+            if (strcmp(nom, nom_joueur) == 0) {
+                *score_joueur = atoi(score_str);
+                printf("Score trouvé pour %s le %s : %d\n", nom_joueur, date, *score_joueur);
+                score_trouve = 1;
+                break;
+            }
+        }
+        ligne_courante++; 
+    }
+    *lignejoueur = ligne_courante;  
+
+    fclose(fichier);
+    return score_trouve; 
 }
 
-int enregistrerScore() {
-    FILE *fichier = fopen("score.txt","a");
-    if (fichier == NULL){
-        printf("Erreur d'ouverture du fichier.\n");
-        return 0;
+
+int enregistrerScore(char *nom_joueur, int score,int lignejoueur) {
+    time_t t = time(NULL);
+    struct tm tm = *localtime(&t);
+    if (lignejoueur == -1) 
+    {
+        FILE *fichier = fopen("score/score.txt", "a"); 
+        if (fichier == NULL) {
+            printf("Erreur d'ouverture du fichier.\n");
+            return 0;
+        }
+        
+        fprintf(fichier,"%s,%d,%02d/%02d/%04d à %02dh%02d\n",nom_joueur, score,tm.tm_mday, tm.tm_mon + 1, tm.tm_year + 1900,tm.tm_hour, tm.tm_min);
+        fclose(fichier);
     }
+    else 
+    {
+        FILE *fichier = fopen("score/score.txt", "r+"); 
+        if (fichier == NULL) {
+            printf("Erreur d'ouverture du fichier.\n");
+            return 0;
+        }
+        
+        char ligne[256];
+        int ligne_courante = 0;  
 
+        while (fgets(ligne, sizeof(ligne), fichier)) {
+            if (ligne_courante == lignejoueur) { 
+                fseek(fichier, -strlen(ligne)-1, SEEK_CUR);
+                fprintf(fichier,"%s,%d,%02d/%02d/%04d à %02dh%02d\n",nom_joueur,score,tm.tm_mday, tm.tm_mon + 1, tm.tm_year + 1900,tm.tm_hour, tm.tm_min);
+                fclose(fichier);
+                return 1; 
+            }
+            ligne_courante++; 
+        }
 
+        fclose(fichier);
+    }
 }
 
 
@@ -169,7 +297,9 @@ int main(){
     char choix;
     int score = 0;
     int terminer = 0;
+    int lignejoueur = -1;
 
+    menuEnregistrement(nom,&score,&lignejoueur);
     menu();
     scanf("%s", &choix);
     while(choix != '0'){
@@ -190,11 +320,13 @@ int main(){
                 printf("division");
                 break;
             case '0':
-                printf("Merci d'avoir joué ! Votre score final est : %d\n", score);
-                terminer = enregistrerScore();
-                if (terminer == 1){ 
-                    printf("%d",&score);
+                if (enregistrerScore(nom, score,lignejoueur)){ 
+                    printf("Score enregistré");
                     return 0;
+                }
+                else {
+                    printf("Erreur\n");
+                    return 1;
                 }
             default:
                 printf("Mauvaise manipulation");
