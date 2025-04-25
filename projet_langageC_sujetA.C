@@ -148,7 +148,7 @@ char menuEnregistrement(int *nom,int *score, int lignejoeur)
 
     while (1==1)
     {
-        printf("+-----------------------------------+\n|1 : Reprendre une partie                   |\n|   (avec un nom d'utilisateur)     |\n|2 : Nouvelle partie            |\n+-----------------------------------+\nQuel est votre choix ?  ");
+        printf("+-----------------------------------+\n|1 : Reprendre une partie           |\n|   (avec un nom d'utilisateur)     |\n|2 : Nouvelle partie                |\n+-----------------------------------+\nQuel est votre choix ?  ");
         scanf(" %c", &choix);
 
         while (getchar() != '\n');
