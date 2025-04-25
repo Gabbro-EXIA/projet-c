@@ -148,8 +148,7 @@ char menuEnregistrement(int *nom,int *score, int lignejoeur)
 
     while (1==1)
     {
-        printf("Bienvenue dans le jeu Champion des Maths !\n");
-        printf("+-----------------------------------+\n|1 : Se connecter                   |\n|   (avec un nom d'utilisateur)     |\n|2 : ne pas se connecter            |\n+-----------------------------------+\nQuel est votre choix ?  ");
+        printf("+-----------------------------------+\n|1 : Reprendre une partie                   |\n|   (avec un nom d'utilisateur)     |\n|2 : Nouvelle partie            |\n+-----------------------------------+\nQuel est votre choix ?  ");
         scanf(" %c", &choix);
 
         while (getchar() != '\n');
@@ -162,13 +161,13 @@ char menuEnregistrement(int *nom,int *score, int lignejoeur)
                 
                 if (lectureScore(nom,score,lignejoeur) == 0) 
                 {
-                    printf("Erreur, le score n'a pas pu être trouvé (verifiez bien que le nom d'utilisateur soit le meme).\n\n");
+                    printf("Erreur, le score n'a pas pu etre trouve (verifiez bien que le nom d'utilisateur soit le meme).\n\n");
                     break;                     
                 }
                 return; 
             case '2':
                 do {
-                    printf("Entrez votre nom d'utilisateur : (ce nom doit être unique)  ");
+                    printf("Entrez votre nom d'utilisateur : (ce nom doit etre unique)  ");
                     scanf("%s", nom); 
                     if (verifJoueur(nom) == 1) {
                         printf("Ce nom d'utilisateur existe deja. Veuillez en choisir un autre.\n");
@@ -302,34 +301,39 @@ int main(){
     menuEnregistrement(nom,&score,&lignejoueur);
     menu();
     scanf("%s", &choix);
-    while(choix != '0'){
-        switch(choix){
-            case '1':
-                addition(&score);
-                break;
-            case '2':
-                soustraction(&score);
-                break;
-            case '3':
-                multiplication(&score);
-                break;
-            case '4':
-                table_multi(&score);
-                break;
-            case '5':
-                printf("division");
-                break;
-            case '0':
-                if (enregistrerScore(nom, score,lignejoueur)){ 
-                    printf("Score enregistré");
-                    return 0;
-                }
-                else {
-                    printf("Erreur\n");
-                    return 1;
-                }
-            default:
-                printf("Mauvaise manipulation");
+    while (1)
+    {
+        while (getchar() != '\n');
+        {
+            switch(choix){
+                case '1':
+                    addition(&score);
+                    break;
+                case '2':
+                    soustraction(&score);
+                    break;
+                case '3':
+                    multiplication(&score);
+                    break;
+                case '4':
+                    table_multi(&score);
+                    break;
+                case '5':
+                    printf("division il n'aura pas de question\n");
+                    break;
+                case '0':
+                    if (enregistrerScore(nom, score,lignejoueur)){ 
+                        printf("Score enregistré");
+                        return 1;
+                    }
+                    else {
+                        printf("Erreur\n");
+                        return -1;
+                    }
+                default:
+                    printf("Mauvaise manipulation");
+                
+            }
         }
         printf("%d",&score);
         menu();
